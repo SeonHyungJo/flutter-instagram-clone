@@ -1,4 +1,4 @@
-name: instagram_clone
+name: instagramClone
 description: 인스타그램 클론코딩.
 
 # The following defines the version and build number for your application.
@@ -27,6 +27,8 @@ dependencies:
   flutter_signin_button: ^1.0.0
   google_sign_in: ^4.1.4
   firebase_auth: ^0.15.4
+  cloud_firestore: ^0.13.4
+  firebase_storage: ^3.1.1
 
 dev_dependencies:
   flutter_test:

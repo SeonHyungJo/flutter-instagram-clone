@@ -1,14 +1,33 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class Accountpage extends StatefulWidget {
+  final FirebaseUser user;
+
+  Accountpage(this.user);
+
   @override
   _AccountpageState createState() => _AccountpageState();
 }
 
 class _AccountpageState extends State<Accountpage> {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
+
+  int _postCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    Firestore.instance.collection('post').where('email', isEqualTo: widget.user.email)
+      .getDocuments()
+      .then((snapshot) {
+        setState(() {
+          _postCount = snapshot.documents.length;
+        });
+      });
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -44,7 +63,7 @@ class _AccountpageState extends State<Accountpage> {
                     width: 80.0,
                     height: 80.0,
                     child: CircleAvatar(
-                      backgroundImage: NetworkImage('https://i.ytimg.com/vi/tDNQSDUjV3c/hqdefault.jpg'),
+                      backgroundImage: NetworkImage(widget.user.photoUrl),
                     ),
                   ),
                   Container(
@@ -75,12 +94,12 @@ class _AccountpageState extends State<Accountpage> {
                 ],
               ),
               Padding(padding: EdgeInsets.all(8.0)),
-              Text('이름',
+              Text(widget.user.displayName,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
               ),
             ],
           ),
-          Text('0\n게시물', textAlign: TextAlign.center, style: TextStyle(fontSize: 18.0),),
+          Text('$_postCount\n게시물', textAlign: TextAlign.center, style: TextStyle(fontSize: 18.0),),
           Text('0\n팔로워', textAlign: TextAlign.center, style: TextStyle(fontSize: 18.0),),
           Text('0\n팔로잉', textAlign: TextAlign.center, style: TextStyle(fontSize: 18.0),),
         ],
